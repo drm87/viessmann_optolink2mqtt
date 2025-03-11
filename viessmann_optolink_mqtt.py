@@ -175,10 +175,10 @@ class VitoElementPercent(HassSensor):
 
 class VitoElementNumber(HassSensor):
     def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet,
-                 slope: bool = False) -> None:
+                 slope: bool = False, unit: str = None, dev_class: str = None, state_c: str = None) -> None:
         super().__init__(name, DEVICE, topic_parent_level=cmd,
                          icon="mdi:chart-bell-curve-cumulative" if slope else "",
-                         category="diagnostic")
+                         category="diagnostic", unit_of_measurement=unit, device_class=dev_class, state_class=state_c)
         self.conn = VitoConnection(telnet, cmd)
 
     @property
@@ -287,7 +287,7 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Kollektortemperatur", "getTempKol", telnet),
             VitoElementBinary("Status der Nachladeunterdrueckung", "getSolarStatusWW", telnet),
             VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet),
-            VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet),
+            VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet, unit="kWh", dev_class="energy", state_c="total_increasing"),
 
             VitoElementTemperature("Speichertemperatur unten", "getTempSpu", telnet),
             VitoElementTemperature("Speichertemperatur", "getTempStp", telnet),
