@@ -219,12 +219,16 @@ class VitoElementSelect(HassSelect):
 
 
 class VitoElementText():
-    def __init__(self, cmd: str, telnet: telnetlib.Telnet) -> None:
+    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet) -> None:
+        super().__init__(name, DEVICE, topic_parent_level=cmd)
         self.conn = VitoConnection(telnet, cmd)
 
     @property
     def value(self) -> None:
         return self.conn.query()
+
+    def value_with_topic(self):
+        return (self.get_topic(), self.value)
 
 
 class VitoElementTextWrite(VitoElementText):
@@ -255,46 +259,63 @@ class VControldClient(ClientBase):
         self.telnet_client = telnet = None  # telnetlib.Telnet(host, port)
         self.sensors = [
             # Sensors
-            VitoElementTemperature("Water top temperature", "DHW-TopTemp", telnet),
-            VitoElementTemperature("Water bottom temperature", "DHW-BottomTemp", telnet),
-            VitoElementTemperature("Outdoor temperature", "TempOutdoor", telnet),
-            VitoElementTemperature("Room temperature, party", "RoomTempPartyMode", telnet),
-            VitoElementTemperature("Room temperature, reduced, ", "RoomTempReduced", telnet),
-            VitoElementTemperatureWritable("Room temperature, normal", "RoomTempNormal", telnet, 14, 20),
-            VitoElementTemperature("Heating", "Heating", telnet),
-            VitoElementTemperature("Circuit temperature, primary, flow", "PrimaryCircuitFlowTemp", telnet),
-            VitoElementTemperature("Circuit temperature, primary, return", "PrimaryCircuitReturnTemp", telnet),
-            VitoElementTemperature("Circuit temperature, secondary, flow", "SecondaryCircuitFlowTemp", telnet),
-            VitoElementTemperature("Circuit temperature, secondary, return", "SecondaryCircuitReturnTemp", telnet),
-            VitoElementTemperatureWritable("DHW Setpoint Normal", "DHW-Setpoint", telnet, 20, 60),
-            VitoElementTemperatureWritable("DHW Setpoint High", "DHW-Setpoint2", telnet, 20, 60),
-            VitoElementTemperatureWritable("DHW Heat Pump Hysteresis", "DHW-HeatPumpHysteresis", telnet, 1, 60),
-            VitoElementTemperatureWritable("DHW Booster Hysteresis", "DHW-BoosterHysteresis", telnet, 1, 60),
-            VitoElementBinary("Compressor", "Compressor", telnet),
-            VitoElementBinary("Pump, primary", "PrimaryPump", telnet),
-            VitoElementBinary("Pump, secondary", "SecondaryPump", telnet),
-            VitoElementBinary("Pump, DHW", "DHWPump", telnet),
-            VitoElementBinary("Pump, DHW circulation", "DHWCirculationPump", telnet),
-            VitoElementPercent("Pump, DHW PWM", "DHW-LoadPumpPwm", telnet),
+            VitoElementTemperature("Aussentemperatur", "getTempA", telnet),
+            VitoElementTemperature("Aussentemperatur (Tiefpass)", "getTempAtp", telnet),
+            VitoElementTemperature("Aussentemperatur (Gedaempft)", "getTempAged", telnet),
+
+            VitoElementTemperature("Warmwassertemperatur", "getTempWWist", telnet),
+            VitoElementTemperature("Warmwassersolltemperatur", "getTempWWsoll", telnet),
+
+            VitoElementTemperature("Abgastemperatur", "getTempAbgas", telnet),
+            VitoElementTemperature("Kesseltemperatur", "getTempKtp", telnet),
+            VitoElementTemperature("Kesselsolltemperatur", "getTempKsoll", telnet),
+
+            VitoElementPercent("Brennerstatus", "getBrennerStatus", telnet),
+            VitoElementNumber("Brennerstarts", "getBrennerStarts", telnet),
+            VitoElementNumber("Brennerstunden Stufe 1", "getBrennerStunden1", telnet),
+            VitoElementPercent("Ist-Leistung Anlage", "getLeistungIst", telnet),
+
+            VitoElementTemperature("Vorlauftemperatur", "getTempVListM1", telnet),
+            VitoElementTemperature("Vorlaufsolltemperatur", "getTempVLsollM1", telnet),
+            VitoElementTemperature("Ruecklauftemperatur", "getTempRL17A", telnet),
+
+            VitoElementTemperature("Kollektortemperatur", "DHW-TopTemp", telnet),
+            VitoElementBinary("Status der Nachladeunterdrueckung", "Compressor", telnet),
+            VitoElementNumber("Betriebsstunden (Solar)", "getBrennerStunden1", telnet),
+            VitoElementNumber("Leistung Gesamt (Solar)", "getBrennerStunden1", telnet),
+
+            VitoElementTemperature("Speichertemperatur unten", "getTempSpu", telnet),
+            VitoElementTemperature("Speichertemperatur", "getTempStp", telnet),
+            VitoElementTemperature("Speichertemperatur (NRF_TiefpassTemperaturwert_STSSOL)", "getTempSTSSOL", telnet),
+
+            VitoElementBinary("Status Pumpe M1", "getPumpeStatusM1", telnet),
+            VitoElementBinary("Status Interne Pumpe", "getPumpeStatusIntern", telnet),
+            VitoElementNumber("Drehzahl Internen Pumpe", "getPumpeDrehzahlIntern", telnet),
+            VitoElementBinary("Status Speicherladepumpe", "getPumpeStatusSp", telnet),
+            VitoElementBinary("Status Zirkulationspumpe", "getPumpeStatusZirku", telnet),
+            VitoElementBinary("Status Umwaelzpumpe Solar", "getPumpeStatusSolar", telnet),
+
+            VitoElementText("Betriebsart", "getBetriebArt", telnet),
+            VitoElementBinary("Status Spar-Betrieb", "getBetriebSparM1", telnet),
+            VitoElementBinary("Status Party-Betrieb", "getBetriebPartyM1", telnet),
+
+            VitoElementTemperature("Raumsolltemperatur normal", "getTempRaumNorSollM1", telnet),
+            VitoElementTemperature("Raumsolltemperatur reduziert", "getTempRaumRedSollM1", telnet),
+            VitoElementTemperature("Raumsolltemperatur Party", "getTempPartyM1", telnet),
+
+            VitoElementBinary("Status Frostwarnung", "getStatusFrostM1", telnet),
+            VitoElementBinary("Status Sammelstoerung", "getStatusStoerung", telnet),
+            VitoElementText("Status Umschaltventil", "getUmschaltventil", telnet),
+
 
             # Diagnostic
-            VitoElementNumber("Heating Curve Slope", "HeatingCurveSlope", telnet, slope=True),
-            VitoElementNumber("Heating Curve Level", "HeatingCurveLevel", telnet, slope=True),
-            VitoElementNumber("Heating COP", "COP-Heating", telnet),
-            VitoElementNumber("DHW COP", "COP-DHW", telnet),
-            VitoElementNumber("Total COP", "SCOP", telnet),
+            VitoElementNumber("Neigung Heizkennlinie", "getNeigungM1", telnet, slope=True),
+            VitoElementNumber("Niveau Heizkennlinie", "getNiveauM1", telnet, slope=True)
 
             # Config
-            VitoElementSelect("Operation Mode", "OpMode", telnet,
-                              {"Heating and DHW": "Heating and DHW",
-                               "DHW Only": "DHW only",
-                               "Reduced": "Continuous Reduced",
-                               "Normal": "Continuous Normal",
-                               "Standby": "Standby",
-                               "Shutdown": "Shutdown",
-                               }),
+
         ]
-        self._vito_device = VitoElementText("DeviceType", self.telnet_client)
+        self._vito_device = VitoElementText("Geräte-Typ", "getDevType", self.telnet_client)
         self.__connect_telnet_client()
 
     def __connect_telnet_client(self):
