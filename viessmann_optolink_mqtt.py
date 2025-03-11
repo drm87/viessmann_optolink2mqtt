@@ -15,9 +15,6 @@ from homeassistant_auto_discovery import (
     HassNumber,
 )
 
-# 192.168.1.250:30080
-
-
 LOG = logging.getLogger("optolink2mqtt")
 
 DEVICE = HassDevice("vcontrold", "Viessmann Optolink",
@@ -84,6 +81,18 @@ class VitoElementBinary(HassBinarySensor):
     def value(self) -> None:
         val = self.conn.query()
         return ["ON", "OFF"][val in ["0", "Off"]]
+
+    def value_with_topic(self):
+        return (self.get_topic(), self.value)
+
+class VitoElementText(HassSensor):
+    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet) -> None:
+        super().__init__(name, DEVICE, topic_parent_level=cmd)
+        self.conn = VitoConnection(telnet, cmd)
+
+    @property
+    def value(self) -> None:
+        return self.conn.query()
 
     def value_with_topic(self):
         return (self.get_topic(), self.value)
@@ -218,17 +227,13 @@ class VitoElementSelect(HassSelect):
         return (self.get_topic(), self.value)
 
 
-class VitoElementText():
-    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet) -> None:
-        super().__init__(name, DEVICE, topic_parent_level=cmd)
+class VitoElementTextSimple():
+    def __init__(self, cmd: str, telnet: telnetlib.Telnet) -> None:
         self.conn = VitoConnection(telnet, cmd)
 
     @property
     def value(self) -> None:
         return self.conn.query()
-
-    def value_with_topic(self):
-        return (self.get_topic(), self.value)
 
 
 class VitoElementTextWrite(VitoElementText):
@@ -315,7 +320,7 @@ class VControldClient(ClientBase):
             # Config
 
         ]
-        self._vito_device = VitoElementText("Geräte-Typ", "getDevType", self.telnet_client)
+        self._vito_device = VitoElementTextSimple("getDevType", self.telnet_client)
         self.__connect_telnet_client()
 
     def __connect_telnet_client(self):
@@ -334,6 +339,7 @@ class VControldClient(ClientBase):
         for sensor in self.sensors:
             sensor.conn.set_telnet_client(telnet)
 
+
     def get_device_type(self):
         model = self._vito_device.value
         # Check the model response. Should be something like 'Vitocal 333-G ID=204B Protokoll:P300'
@@ -344,7 +350,7 @@ class VControldClient(ClientBase):
 
     def version(self) -> None:
         self.logger.debug("Fetching the version...")
-        test = VitoElementText("version", self.telnet_client)
+        test = VitoElementTextSimple("version", self.telnet_client)
         self.logger.info(f"vcontrold: {test.value}")
         self.logger.debug("Fetching a device type...")
         model = self.get_device_type()
