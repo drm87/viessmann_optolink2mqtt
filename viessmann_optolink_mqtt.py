@@ -265,8 +265,8 @@ class VControldClient(ClientBase):
         self.sensors = [
             # Sensors
             VitoElementTemperature("Aussentemperatur", "getTempA", telnet),
-            VitoElementTemperature("Aussentemperatur (Tiefpass)", "getTempAtp", telnet),
-            VitoElementTemperature("Aussentemperatur (Gedaempft)", "getTempAged", telnet),
+            VitoElementTemperature("Aussentemperatur Tiefpass", "getTempAtp", telnet),
+            VitoElementTemperature("Aussentemperatur Gedaempft", "getTempAged", telnet),
 
             VitoElementTemperature("Warmwassertemperatur", "getTempWWist", telnet),
             VitoElementTemperature("Warmwassersolltemperatur", "getTempWWsoll", telnet),
@@ -286,12 +286,12 @@ class VControldClient(ClientBase):
 
             VitoElementTemperature("Kollektortemperatur", "getTempKol", telnet),
             VitoElementBinary("Status der Nachladeunterdrueckung", "getSolarStatusWW", telnet),
-            VitoElementNumber("Betriebsstunden (Solar)", "getSolarStunden", telnet),
-            VitoElementNumber("Leistung Gesamt (Solar)", "getSolarLeistung", telnet),
+            VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet),
+            VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet),
 
             VitoElementTemperature("Speichertemperatur unten", "getTempSpu", telnet),
             VitoElementTemperature("Speichertemperatur", "getTempStp", telnet),
-            VitoElementTemperature("Speichertemperatur (NRF_TiefpassTemperaturwert_STSSOL)", "getTempSTSSOL", telnet),
+            VitoElementTemperature("Speichertemperatur NRF_TiefpassTemperaturwert_STSSOL", "getTempSTSSOL", telnet),
 
             VitoElementBinary("Status Pumpe M1", "getPumpeStatusM1", telnet),
             VitoElementBinary("Status Interne Pumpe", "getPumpeStatusIntern", telnet),
