@@ -279,10 +279,10 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Vorlaufsolltemperatur", "getTempVLsollM1", telnet),
             VitoElementTemperature("Ruecklauftemperatur", "getTempRL17A", telnet),
 
-            VitoElementTemperature("Kollektortemperatur", "DHW-TopTemp", telnet),
-            VitoElementBinary("Status der Nachladeunterdrueckung", "Compressor", telnet),
-            VitoElementNumber("Betriebsstunden (Solar)", "getBrennerStunden1", telnet),
-            VitoElementNumber("Leistung Gesamt (Solar)", "getBrennerStunden1", telnet),
+            VitoElementTemperature("Kollektortemperatur", "getTempKol", telnet),
+            VitoElementBinary("Status der Nachladeunterdrueckung", "getSolarStatusWW", telnet),
+            VitoElementNumber("Betriebsstunden (Solar)", "getSolarStunden", telnet),
+            VitoElementNumber("Leistung Gesamt (Solar)", "getSolarLeistung", telnet),
 
             VitoElementTemperature("Speichertemperatur unten", "getTempSpu", telnet),
             VitoElementTemperature("Speichertemperatur", "getTempStp", telnet),
