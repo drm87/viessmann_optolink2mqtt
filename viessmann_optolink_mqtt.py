@@ -308,7 +308,7 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Raumsolltemperatur reduziert", "getTempRaumRedSollM1", telnet),
             VitoElementTemperature("Raumsolltemperatur Party", "getTempPartyM1", telnet),
 
-            VitoElementBinary("Status Frostwarnung", "getStatusFrostM1", telnet),
+            VitoElementNumber("Status Frostwarnung", "getStatusFrostM1", telnet),
             VitoElementBinary("Status Sammelstoerung", "getStatusStoerung", telnet),
             VitoElementText("Status Umschaltventil", "getUmschaltventil", telnet),
 
