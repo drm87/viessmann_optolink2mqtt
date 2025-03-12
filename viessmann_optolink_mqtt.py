@@ -285,6 +285,7 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Ruecklauftemperatur", "getTempRL17A", telnet),
 
             VitoElementTemperature("Kollektortemperatur", "getTempKol", telnet),
+            VitoElementPercent("Drehzahl Pumpe Solar", "getPumpeDrehzahlSolar", telnet),
             VitoElementBinary("Status der Nachladeunterdrueckung", "getSolarStatusWW", telnet),
             VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet, unit="h", dev_class="duration", state_c="total"),
             VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet, unit="kWh", dev_class="energy", state_c="total_increasing"),
