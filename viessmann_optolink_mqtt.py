@@ -276,8 +276,8 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Kesselsolltemperatur", "getTempKsoll", telnet),
 
             VitoElementPercent("Brennerstatus", "getBrennerStatus", telnet),
-            VitoElementNumber("Brennerstarts", "getBrennerStarts", telnet),
-            VitoElementNumber("Brennerstunden Stufe 1", "getBrennerStunden1", telnet),
+            VitoElementNumber("Brennerstarts", "getBrennerStarts", telnet, state_c="total"),
+            VitoElementNumber("Brennerstunden Stufe 1", "getBrennerStunden1", telnet, unit="h", dev_class="duration", state_c="total"),
             VitoElementPercent("Ist-Leistung Anlage", "getLeistungIst", telnet),
 
             VitoElementTemperature("Vorlauftemperatur", "getTempVListM1", telnet),
@@ -286,7 +286,7 @@ class VControldClient(ClientBase):
 
             VitoElementTemperature("Kollektortemperatur", "getTempKol", telnet),
             VitoElementBinary("Status der Nachladeunterdrueckung", "getSolarStatusWW", telnet),
-            VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet),
+            VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet, unit="h", dev_class="duration", state_c="total"),
             VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet, unit="kWh", dev_class="energy", state_c="total_increasing"),
 
             VitoElementTemperature("Speichertemperatur unten", "getTempSpu", telnet),
@@ -295,7 +295,7 @@ class VControldClient(ClientBase):
 
             VitoElementBinary("Status Pumpe M1", "getPumpeStatusM1", telnet),
             VitoElementBinary("Status Interne Pumpe", "getPumpeStatusIntern", telnet),
-            VitoElementNumber("Drehzahl Internen Pumpe", "getPumpeDrehzahlIntern", telnet),
+            VitoElementPercent("Drehzahl Internen Pumpe", "getPumpeDrehzahlIntern", telnet),
             VitoElementBinary("Status Speicherladepumpe", "getPumpeStatusSp", telnet),
             VitoElementBinary("Status Zirkulationspumpe", "getPumpeStatusZirku", telnet),
             VitoElementBinary("Status Umwaelzpumpe Solar", "getPumpeStatusSolar", telnet),
@@ -308,8 +308,8 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Raumsolltemperatur reduziert", "getTempRaumRedSollM1", telnet),
             VitoElementTemperature("Raumsolltemperatur Party", "getTempPartyM1", telnet),
 
-            VitoElementNumber("Status Frostwarnung", "getStatusFrostM1", telnet),
-            VitoElementBinary("Status Sammelstoerung", "getStatusStoerung", telnet),
+            VitoElementText("Status Frostwarnung", "getStatusFrostM1", telnet),
+            VitoElementText("Status Sammelstoerung", "getStatusStoerung", telnet),
             VitoElementText("Status Umschaltventil", "getUmschaltventil", telnet),
 
 
