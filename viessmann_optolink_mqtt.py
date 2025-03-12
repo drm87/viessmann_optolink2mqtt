@@ -295,12 +295,13 @@ class VControldClient(ClientBase):
 
             VitoElementBinary("Status Pumpe M1", "getPumpeStatusM1", telnet),
             VitoElementBinary("Status Interne Pumpe", "getPumpeStatusIntern", telnet),
-            VitoElementPercent("Drehzahl Internen Pumpe", "getPumpeDrehzahlIntern", telnet),
+            VitoElementPercent("Drehzahl Interne Pumpe", "getPumpeDrehzahlIntern", telnet),
             VitoElementBinary("Status Speicherladepumpe", "getPumpeStatusSp", telnet),
             VitoElementBinary("Status Zirkulationspumpe", "getPumpeStatusZirku", telnet),
             VitoElementBinary("Status Umwaelzpumpe Solar", "getPumpeStatusSolar", telnet),
 
             VitoElementText("Betriebsart", "getBetriebArt", telnet),
+            VitoElementText("Betriebsart M1", "getBetriebArtM1", telnet),
             VitoElementBinary("Status Spar-Betrieb", "getBetriebSparM1", telnet),
             VitoElementBinary("Status Party-Betrieb", "getBetriebPartyM1", telnet),
 
