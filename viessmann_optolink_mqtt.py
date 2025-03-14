@@ -85,9 +85,11 @@ class VitoElementBinary(HassBinarySensor):
     def value_with_topic(self):
         return (self.get_topic(), self.value)
 
+
 class VitoElementText(HassSensor):
-    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet) -> None:
-        super().__init__(name, DEVICE, topic_parent_level=cmd)
+    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet, dev_class: str = None,
+                 state_c: str = None) -> None:
+        super().__init__(name, DEVICE, topic_parent_level=cmd, device_class=dev_class, state_class=state_c)
         self.conn = VitoConnection(telnet, cmd)
 
     @property
@@ -154,9 +156,9 @@ class VitoElementTemperatureWritable(HassNumber):
 
 
 class VitoElementPercent(HassSensor):
-    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet) -> None:
+    def __init__(self, name: str, cmd: str, telnet: telnetlib.Telnet, dev_class: str = "") -> None:
         super().__init__(name, DEVICE, topic_parent_level=cmd,
-                         device_class="", unit_of_measurement="%",
+                         device_class=dev_class, unit_of_measurement="%",
                          state_class="measurement")
         self.conn = VitoConnection(telnet, cmd)
 
@@ -251,7 +253,6 @@ class ClientBase(object):
 
 
 class VControldClient(ClientBase):
-
     class ConnectionFailure(Exception):
         pass
 
@@ -265,55 +266,57 @@ class VControldClient(ClientBase):
         self.sensors = [
             # Sensors
             VitoElementTemperature("Aussentemperatur", "getTempA", telnet),
-            VitoElementTemperature("Aussentemperatur Tiefpass", "getTempAtp", telnet),
             VitoElementTemperature("Aussentemperatur Gedaempft", "getTempAged", telnet),
 
             VitoElementTemperature("Warmwassertemperatur", "getTempWWist", telnet),
             VitoElementTemperature("Warmwassersolltemperatur", "getTempWWsoll", telnet),
+            VitoElementTemperature("Warmwassersolltemperatur Aktuell", "getTempWWsollAktuell", telnet),
 
             VitoElementTemperature("Abgastemperatur", "getTempAbgas", telnet),
             VitoElementTemperature("Kesseltemperatur", "getTempKtp", telnet),
             VitoElementTemperature("Kesselsolltemperatur", "getTempKsoll", telnet),
 
             VitoElementPercent("Brennerstatus", "getBrennerStatus", telnet),
-            VitoElementNumber("Brennerstarts", "getBrennerStarts", telnet, state_c="total"),
-            VitoElementNumber("Brennerstunden Stufe 1", "getBrennerStunden1", telnet, unit="h", dev_class="duration", state_c="total"),
             VitoElementPercent("Ist-Leistung Anlage", "getLeistungIst", telnet),
+            VitoElementNumber("Brennerstarts", "getBrennerStarts", telnet, state_c="total"),
+            VitoElementNumber("Brennerstunden", "getBrennerStunden1", telnet, unit="h", dev_class="duration",
+                              state_c="total"),
 
             VitoElementTemperature("Vorlauftemperatur", "getTempVListM1", telnet),
             VitoElementTemperature("Vorlaufsolltemperatur", "getTempVLsollM1", telnet),
             VitoElementTemperature("Ruecklauftemperatur", "getTempRL17A", telnet),
 
             VitoElementTemperature("Kollektortemperatur", "getTempKol", telnet),
+            VitoElementBinary("Status Umwaelzpumpe Solar", "getPumpeStatusSolar", telnet),
             VitoElementPercent("Drehzahl Pumpe Solar", "getPumpeDrehzahlSolar", telnet),
-            VitoElementBinary("Status der Nachladeunterdrueckung", "getSolarStatusWW", telnet),
-            VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet, unit="h", dev_class="duration", state_c="total"),
-            VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet, unit="kWh", dev_class="energy", state_c="total_increasing"),
+            VitoElementBinary("Status Nachladeunterdrueckung", "getSolarStatusWW", telnet),
+            VitoElementNumber("Betriebsstunden Solar", "getSolarStunden", telnet, unit="h", dev_class="duration",
+                              state_c="total"),
+            VitoElementNumber("Leistung Gesamt Solar", "getSolarLeistung", telnet, unit="kWh", dev_class="energy",
+                              state_c="total_increasing"),
 
-            VitoElementTemperature("Speichertemperatur unten", "getTempSpu", telnet),
+            VitoElementTemperature("Speichertemperatur Solar", "getTempSpu", telnet),
             VitoElementTemperature("Speichertemperatur", "getTempStp", telnet),
-            VitoElementTemperature("Speichertemperatur NRF_TiefpassTemperaturwert_STSSOL", "getTempSTSSOL", telnet),
-
-            VitoElementBinary("Status Pumpe M1", "getPumpeStatusM1", telnet),
             VitoElementBinary("Status Interne Pumpe", "getPumpeStatusIntern", telnet),
             VitoElementPercent("Drehzahl Interne Pumpe", "getPumpeDrehzahlIntern", telnet),
             VitoElementBinary("Status Speicherladepumpe", "getPumpeStatusSp", telnet),
             VitoElementBinary("Status Zirkulationspumpe", "getPumpeStatusZirku", telnet),
-            VitoElementBinary("Status Umwaelzpumpe Solar", "getPumpeStatusSolar", telnet),
 
-            VitoElementText("Betriebsart", "getBetriebArt", telnet),
-            VitoElementText("Betriebsart M1", "getBetriebArtM1", telnet),
+
+            VitoElementText("Betriebsprogramm", "getBetriebArt", telnet),
+            VitoElementText("Betriebsprogramm M1", "getBetriebArtM1", telnet),
+            VitoElementText("Betriebsstatus", "getBetriebsartAktuell", telnet),
             VitoElementBinary("Status Spar-Betrieb", "getBetriebSparM1", telnet),
             VitoElementBinary("Status Party-Betrieb", "getBetriebPartyM1", telnet),
+            VitoElementBinary("Status Ferien-Betrieb", "getFerienbetrieb", telnet),
 
-            VitoElementTemperature("Raumsolltemperatur normal", "getTempRaumNorSollM1", telnet),
-            VitoElementTemperature("Raumsolltemperatur reduziert", "getTempRaumRedSollM1", telnet),
+            VitoElementTemperature("Raumsolltemperatur Normal", "getTempRaumNorSollM1", telnet),
+            VitoElementTemperature("Raumsolltemperatur Reduziert", "getTempRaumRedSollM1", telnet),
             VitoElementTemperature("Raumsolltemperatur Party", "getTempPartyM1", telnet),
 
-            VitoElementText("Status Frostwarnung", "getStatusFrostM1", telnet),
             VitoElementText("Status Sammelstoerung", "getStatusStoerung", telnet),
+            VitoElementText("Fehlerhistory Eintrag 1", "getError0", telnet),
             VitoElementText("Status Umschaltventil", "getUmschaltventil", telnet),
-
 
             # Diagnostic
             VitoElementNumber("Neigung Heizkennlinie", "getNeigungM1", telnet, slope=True),
@@ -340,7 +343,6 @@ class VControldClient(ClientBase):
         self._vito_device.conn.set_telnet_client(telnet)
         for sensor in self.sensors:
             sensor.conn.set_telnet_client(telnet)
-
 
     def get_device_type(self):
         model = self._vito_device.value
