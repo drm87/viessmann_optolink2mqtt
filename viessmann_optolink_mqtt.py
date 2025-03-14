@@ -315,7 +315,6 @@ class VControldClient(ClientBase):
             VitoElementTemperature("Raumsolltemperatur Party", "getTempPartyM1", telnet),
 
             VitoElementText("Status Sammelstoerung", "getStatusStoerung", telnet),
-            VitoElementText("Fehlerhistory Eintrag 1", "getError0", telnet),
             VitoElementText("Status Umschaltventil", "getUmschaltventil", telnet),
 
             # Diagnostic
