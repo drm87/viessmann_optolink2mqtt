@@ -11,7 +11,7 @@
     <!-- BETRIEBSZUSTAND -->
     <command name="getBetriebsartAktuell" protocmd="getaddr">
       <addr>2500</addr>
-      <len>1</len>
+      <len>2</len>
       <unit>ABA</unit>
       <description>HK_AktuelleBetriebsartA1M1</description>
     </command>
