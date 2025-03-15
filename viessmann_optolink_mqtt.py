@@ -378,13 +378,17 @@ class VControldClient(ClientBase):
     def run(self, mqtt) -> list:
         try:
             self.get_device_type()  # to make sure the connection is ok
+            for sensor in self.sensors:
+                update = sensor.value_with_topic()
+                mqtt.publish(*update, retain=False)
+                # self.logger.debug(f"Publish: {update}")
         except self.ConnectionFailure:
             self.__connect_telnet_client()
-            return  # Will reschedule soon...
-        for sensor in self.sensors:
-            update = sensor.value_with_topic()
-            mqtt.publish(*update, retain=False)
-            # self.logger.debug(f"Publish: {update}")
+        except AttributeError:
+            logging.exception('Attribute error on updating sensor values')
+            self.__connect_telnet_client()
+        except:
+            logging.exception('Unknown error on updating sensor values')
 
 
 class MqttClient(mqtt.Client):
