@@ -17,7 +17,7 @@
         <port>3002</port>
       </net>
       <logging>
-        <file>vcontrold.log</file>
+        <file>/var/log/vcontrold.log</file>
         <syslog>n</syslog>
         <debug>n</debug>
       </logging>
