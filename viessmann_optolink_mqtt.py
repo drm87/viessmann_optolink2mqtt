@@ -53,10 +53,12 @@ class VitoConnection(object):
             return
         self.__lock.acquire()
         # self.__read("vctrld>")
-        self.telnet_client.read_very_eager()
-        self.__send(self.cmd)
-        resp = self.__read_line()
-        self.__lock.release()
+        try:
+            self.telnet_client.read_very_eager()
+            self.__send(self.cmd)
+            resp = self.__read_line()
+        finally:
+            self.__lock.release()
         return resp
 
     def set_value(self, value: str):
